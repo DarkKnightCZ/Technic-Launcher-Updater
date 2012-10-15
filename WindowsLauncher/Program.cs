@@ -44,44 +44,47 @@ namespace TechnicLauncher
         }
         private static void LogBasicSystemInfo(TextWriter log)
         {
-            log.WriteLine("Technic Windows Launcher Starting up.");
-            log.WriteLine(getOSInfo());
-            log.WriteLine(@"Contents of C:\Program Files\Java");
-            foreach (string d in Directory.GetFileSystemEntries(@"C:\Program Files\Java"))
-            {
-                log.WriteLine("\t" + d);
+            try{
+                log.WriteLine("Technic Windows Launcher Starting up.");
+                log.WriteLine(getOSInfo());
+                log.WriteLine(@"Contents of C:\Program Files\Java");
+                foreach (string d in Directory.GetFileSystemEntries(@"C:\Program Files\Java"))
+                {
+                    log.WriteLine("\t" + d);
+                }
+                log.WriteLine(@"Contents of C:\Program Files\Java (x86)");
+                foreach (string d in Directory.GetFileSystemEntries(@"C:\Program Files (x86)\Java"))
+                {
+                    log.WriteLine("\t" + d);
+                }
+    
+                log.WriteLine(@"Registry points to "+GetJavaInstallationPath());
+                String path=LocateJavaFromPath();
+                if (path==null)
+                    log.WriteLine("Java not found in user's PATH. (This is normal)");
+                else
+                    log.WriteLine("Java found in PATH at: "+path);
+    
+                path=LocateJavaPath();
+                if (path==null)
+                    log.WriteLine("JAVA_HOME is not set. (This is normal)");
+                else
+                    log.WriteLine("JAVA_HOME points to "+path);
+    
+                path = GetJavaFileAssociationPath();
+                if (path == null)
+                    log.WriteLine(@"Jarfiles do not open with Java. User error.");
+                else
+                    log.WriteLine(@"Jarfiles open with " + path);
+    
+                path = LocateJavaFromProgramFiles();
+                if (path==null)
+                    log.WriteLine(@"No Java found in C:\Program Files. User error.");
+                else
+                    log.WriteLine(@"Found a Java by fast scan at: "+path);
+            }catch(IOException e){
+                log.WriteLine(@"Folder/file does not exists at LogBasicSystemInfo",e.GetBaseException());
             }
-            log.WriteLine(@"Contents of C:\Program Files\Java (x86)");
-            foreach (string d in Directory.GetFileSystemEntries(@"C:\Program Files (x86)\Java"))
-            {
-                log.WriteLine("\t" + d);
-            }
-
-            log.WriteLine(@"Registry points to "+GetJavaInstallationPath());
-            String path=LocateJavaFromPath();
-            if (path==null)
-                log.WriteLine("Java not found in user's PATH. (This is normal)");
-            else
-                log.WriteLine("Java found in PATH at: "+path);
-
-            path=LocateJavaPath();
-            if (path==null)
-                log.WriteLine("JAVA_HOME is not set. (This is normal)");
-            else
-                log.WriteLine("JAVA_HOME points to "+path);
-
-            path = GetJavaFileAssociationPath();
-            if (path == null)
-                log.WriteLine(@"Jarfiles do not open with Java. User error.");
-            else
-                log.WriteLine(@"Jarfiles open with " + path);
-
-            path = LocateJavaFromProgramFiles();
-            if (path==null)
-                log.WriteLine(@"No Java found in C:\Program Files. User error.");
-            else
-                log.WriteLine(@"Found a Java by fast scan at: "+path);
-
         }
 
         private static int getOSArchitecture()
